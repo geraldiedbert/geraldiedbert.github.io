@@ -240,6 +240,105 @@ section h2 {
     color: var(--primary-color);
 }
 
+/* Books Section */
+.books {
+    background: var(--section-bg);
+}
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.book-card {
+    background: var(--background);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.book-cover {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+.book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.book-card:hover .book-cover img {
+    transform: scale(1.05);
+}
+
+.book-info {
+    padding: 1.5rem;
+}
+
+.book-info h3 {
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.author {
+    color: var(--light-text);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.review-toggle {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.review-toggle:hover {
+    background: var(--secondary-color);
+}
+
+.book-review {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--section-bg);
+    display: none;
+}
+
+.book-review.active {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.book-review p {
+    margin-bottom: 1rem;
+}
+
+.book-review ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.book-review li {
+    margin-bottom: 0.5rem;
+}
+
 /* Blog Section */
 .blog-content {
     text-align: center;

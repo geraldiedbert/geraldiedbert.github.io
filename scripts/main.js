@@ -58,4 +58,23 @@ document.querySelectorAll('section').forEach(section => {
     section.style.transform = 'translateY(20px)';
     section.style.transition = 'all 0.6s ease-out';
     observer.observe(section);
+});
+
+// Book Review Toggle
+document.querySelectorAll('.review-toggle').forEach(button => {
+    button.addEventListener('click', () => {
+        const review = button.nextElementSibling;
+        const isActive = review.classList.contains('active');
+        
+        // Toggle the current review
+        review.classList.toggle('active');
+        
+        // Update button text
+        button.textContent = isActive ? 'Read Review' : 'Hide Review';
+        
+        // Smooth scroll to review if opening
+        if (!isActive) {
+            review.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
 }); 
