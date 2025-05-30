@@ -89,8 +89,8 @@ const booksSection = document.querySelector('.books');
 let currentIndex = 0;
 const cardWidth = 400; // Width of each card including gap
 const gap = 32; // Gap between cards
-let isScrolling = false;
-let scrollTimeout;
+let isInBooksSection = false;
+let lastScrollY = 0;
 
 function updateSlider() {
     const offset = currentIndex * -(cardWidth + gap);
@@ -120,28 +120,41 @@ function slidePrev() {
 prevButton.addEventListener('click', slidePrev);
 nextButton.addEventListener('click', slideNext);
 
-// Scroll-based animation
+// Scroll lock and horizontal scroll conversion
 window.addEventListener('scroll', () => {
-    if (scrollTimeout) {
-        window.cancelAnimationFrame(scrollTimeout);
+    const rect = booksSection.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    
+    // Check if we're entering the books section
+    if (rect.top <= windowHeight && rect.bottom >= 0 && !isInBooksSection) {
+        isInBooksSection = true;
+        lastScrollY = window.scrollY;
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${lastScrollY}px`;
+        document.body.style.width = '100%';
     }
-
-    scrollTimeout = window.requestAnimationFrame(() => {
-        const rect = booksSection.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        
-        // Check if the books section is in view
-        if (rect.top < windowHeight && rect.bottom > 0) {
-            const scrollProgress = (windowHeight - rect.top) / (windowHeight + rect.height);
-            const maxIndex = bookCards.length - 1;
-            const targetIndex = Math.min(Math.floor(scrollProgress * (maxIndex + 1)), maxIndex);
-            
-            if (targetIndex !== currentIndex) {
-                currentIndex = targetIndex;
-                updateSlider();
-            }
+    
+    // Check if we're leaving the books section
+    if ((rect.top > windowHeight || rect.bottom < 0) && isInBooksSection) {
+        isInBooksSection = false;
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, lastScrollY);
+    }
+    
+    // Handle horizontal scrolling when in books section
+    if (isInBooksSection) {
+        const scrollDelta = window.scrollY - lastScrollY;
+        if (scrollDelta > 0 && currentIndex < bookCards.length - 1) {
+            slideNext();
+        } else if (scrollDelta < 0 && currentIndex > 0) {
+            slidePrev();
         }
-    });
+        lastScrollY = window.scrollY;
+    }
 });
 
 // Initialize slider

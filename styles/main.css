@@ -246,7 +246,6 @@ section h2 {
     padding: 5rem 0;
     overflow: hidden;
     position: relative;
-    height: 100vh;
     display: flex;
     flex-direction: column;
 }
@@ -261,7 +260,7 @@ section h2 {
 .books-slider {
     position: relative;
     width: 100%;
-    height: calc(100vh - 200px);
+    height: 600px;
     overflow: hidden;
 }
 
@@ -405,13 +404,11 @@ section h2 {
 
 @media (max-width: 768px) {
     .books {
-        height: auto;
-        min-height: 100vh;
+        padding: 3rem 0;
     }
 
     .books-slider {
-        height: auto;
-        min-height: calc(100vh - 200px);
+        height: 500px;
     }
 
     .book-card {
