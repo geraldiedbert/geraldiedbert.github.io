@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll Test</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .section-1 {
+            background-color: #f0f0f0;
+        }
+
+        .section-2 {
+            background-color: #e0e0e0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+        }
+
+        .section-3 {
+            background-color: #d0d0d0;
+        }
+
+        .card {
+            display: inline-block;
+            width: 300px;
+            height: 400px;
+            margin: 0 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .scroll-info {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-info">
+        <div>Scroll Y: <span id="scrollY">0</span></div>
+        <div>Scroll X: <span id="scrollX">0</span></div>
+        <div>Delta Y: <span id="deltaY">0</span></div>
+        <div>Delta X: <span id="deltaX">0</span></div>
+    </div>
+
+    <div class="section section-1">
+        <h1>Section 1 - Normal Scroll</h1>
+        <p>Scroll down to see how normal vertical scrolling works</p>
+    </div>
+
+    <div class="section section-2">
+        <h1>Section 2 - Horizontal Scroll</h1>
+        <div class="cards-container">
+            <div class="card">Card 1</div>
+            <div class="card">Card 2</div>
+            <div class="card">Card 3</div>
+            <div class="card">Card 4</div>
+            <div class="card">Card 5</div>
+        </div>
+    </div>
+
+    <div class="section section-3">
+        <h1>Section 3 - Back to Normal</h1>
+        <p>Scroll up to see how it returns to normal scrolling</p>
+    </div>
+
+    <script>
+        // Track scroll position
+        window.addEventListener('scroll', () => {
+            document.getElementById('scrollY').textContent = window.scrollY;
+            document.getElementById('scrollX').textContent = window.scrollX;
+        });
+
+        // Track wheel events
+        window.addEventListener('wheel', (e) => {
+            document.getElementById('deltaY').textContent = e.deltaY;
+            document.getElementById('deltaX').textContent = e.deltaX;
+        });
+
+        // Optional: Prevent default scroll in section 2
+        document.querySelector('.section-2').addEventListener('wheel', (e) => {
+            // Uncomment to see the effect of preventing default scroll
+            // e.preventDefault();
+        });
+    </script>
+</body>
+</html> 
