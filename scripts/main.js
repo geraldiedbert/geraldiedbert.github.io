@@ -91,6 +91,7 @@ const cardWidth = 400; // Width of each card including gap
 const gap = 32; // Gap between cards
 let isInBooksSection = false;
 let lastScrollY = 0;
+let scrollThreshold = 50; // Minimum scroll amount to trigger slide change
 
 function updateSlider() {
     const offset = currentIndex * -(cardWidth + gap);
@@ -144,18 +145,26 @@ window.addEventListener('scroll', () => {
         document.body.style.width = '';
         window.scrollTo(0, lastScrollY);
     }
+});
+
+// Handle wheel events for horizontal scrolling
+window.addEventListener('wheel', (e) => {
+    if (!isInBooksSection) return;
     
-    // Handle horizontal scrolling when in books section
-    if (isInBooksSection) {
-        const scrollDelta = window.scrollY - lastScrollY;
+    e.preventDefault();
+    
+    // Accumulate scroll delta
+    const scrollDelta = e.deltaY;
+    
+    // Only trigger slide change if we've accumulated enough scroll
+    if (Math.abs(scrollDelta) > scrollThreshold) {
         if (scrollDelta > 0 && currentIndex < bookCards.length - 1) {
             slideNext();
         } else if (scrollDelta < 0 && currentIndex > 0) {
             slidePrev();
         }
-        lastScrollY = window.scrollY;
     }
-});
+}, { passive: false });
 
 // Initialize slider
 updateSlider();
