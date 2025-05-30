@@ -77,4 +77,54 @@ document.querySelectorAll('.review-toggle').forEach(button => {
             review.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     });
+});
+
+// Books Slider
+const booksTrack = document.querySelector('.books-track');
+const bookCards = document.querySelectorAll('.book-card');
+const prevButton = document.querySelector('.slider-prev');
+const nextButton = document.querySelector('.slider-next');
+
+let currentIndex = 0;
+const cardWidth = 400; // Width of each card including gap
+const gap = 32; // Gap between cards
+
+function updateSlider() {
+    const offset = currentIndex * -(cardWidth + gap);
+    booksTrack.style.transform = `translateX(${offset}px)`;
+    
+    // Update active state
+    bookCards.forEach((card, index) => {
+        card.classList.toggle('active', index === currentIndex);
+    });
+}
+
+function slideNext() {
+    if (currentIndex < bookCards.length - 1) {
+        currentIndex++;
+        updateSlider();
+    }
+}
+
+function slidePrev() {
+    if (currentIndex > 0) {
+        currentIndex--;
+        updateSlider();
+    }
+}
+
+// Event listeners for slider controls
+prevButton.addEventListener('click', slidePrev);
+nextButton.addEventListener('click', slideNext);
+
+// Initialize slider
+updateSlider();
+
+// Optional: Add keyboard navigation
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+        slidePrev();
+    } else if (e.key === 'ArrowRight') {
+        slideNext();
+    }
 }); 
