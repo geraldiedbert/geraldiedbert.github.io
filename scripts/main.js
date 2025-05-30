@@ -84,10 +84,13 @@ const booksTrack = document.querySelector('.books-track');
 const bookCards = document.querySelectorAll('.book-card');
 const prevButton = document.querySelector('.slider-prev');
 const nextButton = document.querySelector('.slider-next');
+const booksSection = document.querySelector('.books');
 
 let currentIndex = 0;
 const cardWidth = 400; // Width of each card including gap
 const gap = 32; // Gap between cards
+let isScrolling = false;
+let scrollTimeout;
 
 function updateSlider() {
     const offset = currentIndex * -(cardWidth + gap);
@@ -116,6 +119,30 @@ function slidePrev() {
 // Event listeners for slider controls
 prevButton.addEventListener('click', slidePrev);
 nextButton.addEventListener('click', slideNext);
+
+// Scroll-based animation
+window.addEventListener('scroll', () => {
+    if (scrollTimeout) {
+        window.cancelAnimationFrame(scrollTimeout);
+    }
+
+    scrollTimeout = window.requestAnimationFrame(() => {
+        const rect = booksSection.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        // Check if the books section is in view
+        if (rect.top < windowHeight && rect.bottom > 0) {
+            const scrollProgress = (windowHeight - rect.top) / (windowHeight + rect.height);
+            const maxIndex = bookCards.length - 1;
+            const targetIndex = Math.min(Math.floor(scrollProgress * (maxIndex + 1)), maxIndex);
+            
+            if (targetIndex !== currentIndex) {
+                currentIndex = targetIndex;
+                updateSlider();
+            }
+        }
+    });
+});
 
 // Initialize slider
 updateSlider();
