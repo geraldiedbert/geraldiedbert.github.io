@@ -89,6 +89,10 @@
     </div>
 
     <script>
+        let lastDeltaY = 0;
+        let lastDeltaX = 0;
+        let lastScrollTime = 0;
+
         // Track scroll position
         window.addEventListener('scroll', () => {
             document.getElementById('scrollY').textContent = window.scrollY;
@@ -99,12 +103,15 @@
         window.addEventListener('wheel', (e) => {
             const deltaY = e.deltaY;
             const deltaX = e.deltaX;
+            lastDeltaY = deltaY;
+            lastDeltaX = deltaX;
+            lastScrollTime = Date.now();
             
-            // Update the display with direction indicators
+            // Update the display with direction indicators and timing
             document.getElementById('deltaY').textContent = 
-                `${deltaY > 0 ? '↓' : deltaY < 0 ? '↑' : ''} ${deltaY}`;
+                `${deltaY > 0 ? '↓' : deltaY < 0 ? '↑' : ''} ${deltaY} (${e.deltaMode === 0 ? 'px' : e.deltaMode === 1 ? 'lines' : 'pages'})`;
             document.getElementById('deltaX').textContent = 
-                `${deltaX > 0 ? '→' : deltaX < 0 ? '←' : ''} ${deltaX}`;
+                `${deltaX > 0 ? '→' : deltaX < 0 ? '←' : ''} ${deltaX} (${e.deltaMode === 0 ? 'px' : e.deltaMode === 1 ? 'lines' : 'pages'})`;
             
             // Log detailed info to console
             console.log('Wheel Event:', {
@@ -114,9 +121,18 @@
                     vertical: deltaY > 0 ? 'down' : deltaY < 0 ? 'up' : 'none',
                     horizontal: deltaX > 0 ? 'right' : deltaX < 0 ? 'left' : 'none'
                 },
-                device: e.deltaMode === 0 ? 'pixels' : e.deltaMode === 1 ? 'lines' : 'pages'
+                device: e.deltaMode === 0 ? 'pixels' : e.deltaMode === 1 ? 'lines' : 'pages',
+                time: new Date().toISOString()
             });
         });
+
+        // Clear delta values after scrolling stops
+        setInterval(() => {
+            if (Date.now() - lastScrollTime > 100) { // 100ms threshold
+                document.getElementById('deltaY').textContent = '0 (no scroll)';
+                document.getElementById('deltaX').textContent = '0 (no scroll)';
+            }
+        }, 100);
 
         // Optional: Prevent default scroll in section 2
         document.querySelector('.section-2').addEventListener('wheel', (e) => {
