@@ -95,10 +95,27 @@
             document.getElementById('scrollX').textContent = window.scrollX;
         });
 
-        // Track wheel events
+        // Track wheel events with more detailed info
         window.addEventListener('wheel', (e) => {
-            document.getElementById('deltaY').textContent = e.deltaY;
-            document.getElementById('deltaX').textContent = e.deltaX;
+            const deltaY = e.deltaY;
+            const deltaX = e.deltaX;
+            
+            // Update the display with direction indicators
+            document.getElementById('deltaY').textContent = 
+                `${deltaY > 0 ? '↓' : deltaY < 0 ? '↑' : ''} ${deltaY}`;
+            document.getElementById('deltaX').textContent = 
+                `${deltaX > 0 ? '→' : deltaX < 0 ? '←' : ''} ${deltaX}`;
+            
+            // Log detailed info to console
+            console.log('Wheel Event:', {
+                deltaY,
+                deltaX,
+                direction: {
+                    vertical: deltaY > 0 ? 'down' : deltaY < 0 ? 'up' : 'none',
+                    horizontal: deltaX > 0 ? 'right' : deltaX < 0 ? 'left' : 'none'
+                },
+                device: e.deltaMode === 0 ? 'pixels' : e.deltaMode === 1 ? 'lines' : 'pages'
+            });
         });
 
         // Optional: Prevent default scroll in section 2
