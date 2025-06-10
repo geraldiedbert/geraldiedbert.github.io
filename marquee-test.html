@@ -4,14 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marquee Scroll Test</title>
+
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
         }
 
+        .h2 {
+            margin: 0;
+            padding: 0;
+        }
+
+        .p {
+            font-size: .85em;
+            line-height: 1.4em;
+            margin-bottom: 0;
+
+        }
+
         .section {
-            height: 100vh;
+            height: 50vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -24,52 +37,39 @@
             background-color: #f0f0f0;
         }
 
-        .section-2 {
+        .spacer {
+            height: 20vh;
+
+        }
+
+        .animated-element {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
             background-color: #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            left: -100px;
             position: relative;
+            overflow: hidden;
         }
 
         .section-3 {
             background-color: #d0d0d0;
         }
 
-        .pin-spacer {
-            width: 100%;
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
+        .module-text {
+            padding: 4rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
-        .marquee-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            background: rgba(0,0,0,0.1);
-        }
-
-        .marquee-items {
-            display: flex;
-            gap: 2rem;
-            padding: 2rem;
-            will-change: transform;
-        }
-
-        .marquee-item {
-            flex: 0 0 300px;
-            height: 400px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1rem;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        .module-text .title {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 1rem;
         }
 
         .scroll-info {
@@ -83,6 +83,27 @@
             font-family: monospace;
             z-index: 1000;
         }
+
+        .marquee-container {
+            display: flex;
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .marquee-item {
+            flex: 0 0 300px;
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .marquee-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
     </style>
 </head>
 <body>
@@ -98,21 +119,59 @@
         <p>Scroll down to see the marquee effect</p>
     </div>
 
-    <div class="section section-2">
-        <div class="pin-spacer">
-            <div class="marquee-container">
-                <div class="marquee-items">
-                    <div class="marquee-item">Item 1</div>
-                    <div class="marquee-item">Item 2</div>
-                    <div class="marquee-item">Item 3</div>
-                    <div class="marquee-item">Item 4</div>
-                    <div class="marquee-item">Item 5</div>
-                    <div class="marquee-item">Item 6</div>
-                    <div class="marquee-item">Item 7</div>
-                    <div class="marquee-item">Item 8</div>
-                </div>
+    <div class="section section-1">
+        <h1>Section 1 - Normal Scroll</h1>
+        <p>Scroll down to see the marquee effect</p>
+    </div>
+
+    <div class="section section-1">
+        <h1>Section 1 - Normal Scroll</h1>
+        <p>Scroll down to see the marquee effect</p>
+    </div>
+
+    <!-- <div class="module-text">
+        <div> </div>
+        <div>
+            <span class="title">Approach</span>
+            <p></p>
+            <p>Our vision was to create an experience that pushed Believe in the Run into the next tier of competition with national and worldwide endurance media outlets. At the same time, so much of what people love about BITR is the authenticity and personality that comes through in every piece of content. It was important to us to upgrade the editorial design without losing that critical personal touch.</p>
+            <p></p>
+        </div>
+    </div> -->
+    
+    <div class="spacer"></div>
+
+    
+    <div class="animated-element">
+        <!-- <h2>Animate Me!</h2>
+        <p>fuck you</p> -->
+        <div class="marquee-container">
+            <div class="marquee-item">
+                <img src="https://picsum.photos/300/200?random=1" alt="Random image 1">
+            </div>
+            <div class="marquee-item">
+                <img src="https://picsum.photos/300/200?random=2" alt="Random image 2">
+            </div>
+            <div class="marquee-item">
+                <img src="https://picsum.photos/300/200?random=3" alt="Random image 3">
+            </div>
+            <div class="marquee-item">
+                <img src="https://picsum.photos/300/200?random=4" alt="Random image 4">
+            </div>
+            <div class="marquee-item">
+                <img src="https://picsum.photos/300/200?random=5" alt="Random image 5">
+            </div>
+            <div class="marquee-item">
+                <img src="https://picsum.photos/300/200?random=6" alt="Random image 6">
             </div>
         </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="section section-3">
+        <h1>Section 3 - Back to Normal</h1>
+        <p>Scroll up to see how it returns to normal scrolling</p>
     </div>
 
     <div class="section section-3">
@@ -120,61 +179,106 @@
         <p>Scroll up to see how it returns to normal scrolling</p>
     </div>
 
+    <div class="section section-3">
+        <h1>Section 3 - Back to Normal</h1>
+        <p>Scroll up to see how it returns to normal scrolling</p>
+    </div>
+
+    <div class="section section-3">
+        <h1>Section 3 - Back to Normal</h1>
+        <p>Scroll up to see how it returns to normal scrolling</p>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1/bundled/lenis.min.js"></script>
+
     <script>
-        let lastScrollTime = 0;
-        let isInMarqueeSection = false;
-        let lastScrollY = 0;
-        const marqueeItems = document.querySelector('.marquee-items');
-        let currentTranslateX = 0;
 
-        // Track scroll position
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            document.getElementById('scrollY').textContent = scrollY;
-            document.getElementById('scrollX').textContent = window.scrollX;
-
-            // Check if we're in the marquee section
-            const marqueeSection = document.querySelector('.section-2');
-            const rect = marqueeSection.getBoundingClientRect();
-            const windowHeight = window.innerHeight;
-
-            if (rect.top <= windowHeight && rect.bottom >= 0 && !isInMarqueeSection) {
-                isInMarqueeSection = true;
-                lastScrollY = scrollY;
-                document.body.style.overflow = 'hidden';
-                document.body.style.position = 'fixed';
-                document.body.style.top = `-${lastScrollY}px`;
-                document.body.style.width = '100%';
+        //gsap animation
+        let tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: '.animated-element',
+                start: 'top center',
+                end: '250% center',
+                scrub: false,
+                markers: true,
+                toggleActions: 'play reverse play reverse',
             }
+        })
 
-            if ((rect.top > windowHeight || rect.bottom < 0) && isInMarqueeSection) {
-                isInMarqueeSection = false;
-                document.body.style.overflow = '';
-                document.body.style.position = '';
-                document.body.style.top = '';
-                document.body.style.width = '';
-                window.scrollTo(0, lastScrollY);
-            }
-        });
+        tl.to('.animated-element', {
+            x: 800,
+            duration: 0.75,
+        })
 
-        // Handle wheel events for horizontal scrolling
-        window.addEventListener('wheel', (e) => {
-            if (!isInMarqueeSection) return;
-            
-            e.preventDefault();
-            
-            const deltaX = e.deltaY; // Convert vertical scroll to horizontal
-            currentTranslateX += deltaX;
-            
-            // Limit the scroll range
-            const maxScroll = -(marqueeItems.scrollWidth - window.innerWidth);
-            currentTranslateX = Math.max(maxScroll, Math.min(0, currentTranslateX));
-            
-            marqueeItems.style.transform = `translateX(${currentTranslateX}px)`;
-            
-            document.getElementById('deltaY').textContent = e.deltaY;
-            document.getElementById('deltaX').textContent = e.deltaX;
-        }, { passive: false });
+
+        // smooth scroll
+        const lenis = new Lenis()
+
+        lenis.on('scroll', (e) => {
+            console.log(e)
+        })
+
+        function raf(time) {
+            lenis.raf(time)
+            requestAnimationFrame(raf)
+        }
+
+        requestAnimationFrame(raf)
+        
+        // // Register ScrollTrigger plugin
+        // gsap.registerPlugin(ScrollTrigger);
+
+        // // Track scroll position
+        // window.addEventListener('scroll', () => {
+        //     document.getElementById('scrollY').textContent = window.scrollY;
+        //     document.getElementById('scrollX').textContent = window.scrollX;
+        // });
+
+        // // Track wheel events
+        // window.addEventListener('wheel', (e) => {
+        //     document.getElementById('deltaY').textContent = e.deltaY;
+        //     document.getElementById('deltaX').textContent = e.deltaX;
+        // });
+
+        // // Create the marquee animation
+        // const marqueeItems = document.querySelector('.marquee-items');
+        // const items = gsap.utils.toArray('.marquee-item');
+        // const itemWidth = 300; // Width of each item
+        // const gap = 32; // Gap between items
+        // const totalWidth = (itemWidth + gap) * items.length;
+
+        // // Set up the ScrollTrigger
+        // ScrollTrigger.create({
+        //     trigger: ".pin-spacer",
+        //     start: "top top",
+        //     end: "+=100%",
+        //     pin: true,
+        //     anticipatePin: 1,
+        //     onEnter: () => {
+        //         gsap.to(marqueeItems, {
+        //             x: -totalWidth + window.innerWidth,
+        //             ease: "none",
+        //             scrollTrigger: {
+        //                 trigger: ".pin-spacer",
+        //                 start: "top top",
+        //                 end: "+=100%",
+        //                 scrub: 1,
+        //                 pin: true,
+        //                 anticipatePin: 1
+        //             }
+        //         });
+        //     },
+        //     onLeaveBack: () => {
+        //         gsap.to(marqueeItems, {
+        //             x: 0,
+        //             duration: 3,
+        //             ease: "power2.inOut"
+        //         });
+        //     }
+        // });
     </script>
 </body>
 </html> 
