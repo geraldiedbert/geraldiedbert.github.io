@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion-like Notes</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #37352f;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .note-block {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .note-block:hover {
+            background-color: #f7f6f3;
+        }
+
+        .note-block:focus-within {
+            background-color: #f7f6f3;
+        }
+
+        .note-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            min-height: 24px;
+        }
+
+        .checkbox {
+            width: 16px;
+            height: 16px;
+            border: 1px solid #d3d1cb;
+            border-radius: 3px;
+            margin-top: 3px;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .checkbox.checked {
+            background-color: #2eaadc;
+            border-color: #2eaadc;
+        }
+
+        .checkbox.checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .text-input {
+            flex-grow: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 16px;
+            line-height: 1.5;
+            padding: 0;
+            resize: none;
+            min-height: 24px;
+        }
+
+        .add-note {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            color: #787774;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .add-note:hover {
+            background-color: #f7f6f3;
+        }
+
+        .add-note::before {
+            content: "+";
+            font-size: 20px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .toolbar {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .toolbar button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: #f7f6f3;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #37352f;
+        }
+
+        .toolbar button:hover {
+            background: #e9e8e4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="notes-container">
+            <!-- Notes will be added here -->
+        </div>
+        <div class="add-note" id="add-note">Add a note</div>
+    </div>
+
+    <div class="toolbar">
+        <button id="clear-all">Clear All</button>
+        <button id="save-notes">Save Notes</button>
+    </div>
+
+    <script>
+        class Note {
+            constructor(text = '', checked = false) {
+                this.text = text;
+                this.checked = checked;
+            }
+        }
+
+        class NotesApp {
+            constructor() {
+                this.notes = [];
+                this.container = document.getElementById('notes-container');
+                this.addNoteBtn = document.getElementById('add-note');
+                this.clearAllBtn = document.getElementById('clear-all');
+                this.saveNotesBtn = document.getElementById('save-notes');
+
+                this.loadNotes();
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                this.addNoteBtn.addEventListener('click', () => this.addNote());
+                this.clearAllBtn.addEventListener('click', () => this.clearAll());
+                this.saveNotesBtn.addEventListener('click', () => this.saveNotes());
+            }
+
+            createNoteElement(note, index) {
+                const noteBlock = document.createElement('div');
+                noteBlock.className = 'note-block';
+                
+                const noteContent = document.createElement('div');
+                noteContent.className = 'note-content';
+
+                const checkbox = document.createElement('div');
+                checkbox.className = `checkbox ${note.checked ? 'checked' : ''}`;
+                checkbox.addEventListener('click', () => this.toggleCheckbox(index));
+
+                const textInput = document.createElement('textarea');
+                textInput.className = 'text-input';
+                textInput.value = note.text;
+                textInput.placeholder = 'Type something...';
+                textInput.addEventListener('input', (e) => this.updateNoteText(index, e.target.value));
+                textInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.addNote();
+                    }
+                });
+
+                noteContent.appendChild(checkbox);
+                noteContent.appendChild(textInput);
+                noteBlock.appendChild(noteContent);
+
+                return noteBlock;
+            }
+
+            render() {
+                this.container.innerHTML = '';
+                this.notes.forEach((note, index) => {
+                    this.container.appendChild(this.createNoteElement(note, index));
+                });
+            }
+
+            addNote() {
+                this.notes.push(new Note());
+                this.render();
+                const lastNote = this.container.lastElementChild;
+                const textInput = lastNote.querySelector('.text-input');
+                textInput.focus();
+            }
+
+            toggleCheckbox(index) {
+                this.notes[index].checked = !this.notes[index].checked;
+                this.render();
+            }
+
+            updateNoteText(index, text) {
+                this.notes[index].text = text;
+            }
+
+            clearAll() {
+                if (confirm('Are you sure you want to clear all notes?')) {
+                    this.notes = [];
+                    this.render();
+                    this.saveNotes();
+                }
+            }
+
+            saveNotes() {
+                localStorage.setItem('notes', JSON.stringify(this.notes));
+                alert('Notes saved!');
+            }
+
+            loadNotes() {
+                const savedNotes = localStorage.getItem('notes');
+                if (savedNotes) {
+                    this.notes = JSON.parse(savedNotes);
+                    this.render();
+                }
+            }
+        }
+
+        // Initialize the app
+        const app = new NotesApp();
+    </script>
+</body>
+</html> 
