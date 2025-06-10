@@ -47,6 +47,60 @@
             border-bottom: 1px solid #e9e8e4;
         }
 
+        .paragraph-section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: #ffffff;
+            border: 1px solid #e9e8e4;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .paragraph-section h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1rem;
+            color: #37352f;
+        }
+
+        .paragraph-content {
+            padding: 0.5rem;
+            border: 1px solid #e9e8e4;
+            border-radius: 4px;
+            background-color: #f7f6f3;
+        }
+
+        .paragraph-content p {
+            margin: 0 0 0.5rem 0;
+            line-height: 1.5;
+        }
+
+        .paragraph-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .add-paragraph {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            color: #787774;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            font-size: 14px;
+        }
+
+        .add-paragraph:hover {
+            background-color: #f7f6f3;
+        }
+
+        .add-paragraph::before {
+            content: "+";
+            font-size: 16px;
+            width: 16px;
+            text-align: center;
+        }
+
         .notes-area {
             width: calc(100% - 2rem);
             height: calc(100vh - 250px);
@@ -236,6 +290,14 @@
     <div class="container">
         <div class="section">
             <div class="section-title">Notes</div>
+            <div class="paragraph-section">
+                <h3>About</h3>
+                <div id="paragraph-content" class="paragraph-content">
+                    <p>Welcome to your notes page! This is a simple and clean interface for managing your tasks and notes.</p>
+                    <p>Use the left section for longer notes and paragraphs, and the right section for quick tasks and to-dos.</p>
+                    <p>All your content is automatically saved locally in your browser.</p>
+                </div>
+            </div>
             <textarea id="notes-area" class="notes-area" placeholder="Write your notes here..."></textarea>
         </div>
         <div class="section">
@@ -337,7 +399,6 @@
                         this.notesArea.value = data.textArea || '';
                         this.render();
                         
-                        // Show last saved time if available
                         if (data.lastSaved) {
                             this.showSaveStatus(`Last saved: ${data.lastSaved}`);
                         }
