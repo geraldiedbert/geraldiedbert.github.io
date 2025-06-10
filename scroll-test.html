@@ -92,9 +92,9 @@
         let lastScrollTime = 0;
 
         // Track scroll position
-        window.addEventListener('scroll', (d) => {
-            document.getElementById('scrollY').textContent = d.scrollY;
-            document.getElementById('scrollX').textContent = d.scrollX;
+        window.addEventListener('click', () => {
+            document.getElementById('scrollY').textContent = window.scrollY;
+            document.getElementById('scrollX').textContent = window.scrollX;
         });
 
         // Track wheel events with more detailed info
