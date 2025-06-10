@@ -250,6 +250,7 @@
     <div class="toolbar">
         <button id="clear-all">Clear All</button>
         <button id="save-notes">Save Notes</button>
+        <span id="save-status" style="margin-left: 1rem; color: #787774; font-size: 14px;"></span>
     </div>
 
     <script>
@@ -268,7 +269,9 @@
                 this.addNoteBtn = document.getElementById('add-note');
                 this.clearAllBtn = document.getElementById('clear-all');
                 this.saveNotesBtn = document.getElementById('save-notes');
+                this.saveStatus = document.getElementById('save-status');
                 this.draggedItem = null;
+                this.autoSaveTimeout = null;
 
                 this.loadNotes();
                 this.setupEventListeners();
@@ -277,14 +280,72 @@
             setupEventListeners() {
                 this.addNoteBtn.addEventListener('click', () => this.addNote());
                 this.clearAllBtn.addEventListener('click', () => this.clearAll());
-                this.saveNotesBtn.addEventListener('click', () => this.saveNotes());
-                this.notesArea.addEventListener('input', () => this.saveNotes());
+                this.saveNotesBtn.addEventListener('click', () => this.saveNotes(true));
+                this.notesArea.addEventListener('input', () => this.autoSave());
                 
                 // Drag and drop event listeners
                 this.container.addEventListener('dragstart', (e) => this.handleDragStart(e));
                 this.container.addEventListener('dragend', (e) => this.handleDragEnd(e));
                 this.container.addEventListener('dragover', (e) => this.handleDragOver(e));
                 this.container.addEventListener('drop', (e) => this.handleDrop(e));
+            }
+
+            showSaveStatus(message, isError = false) {
+                this.saveStatus.textContent = message;
+                this.saveStatus.style.color = isError ? '#ff4d4f' : '#52c41a';
+                setTimeout(() => {
+                    this.saveStatus.textContent = '';
+                }, 3000);
+            }
+
+            autoSave() {
+                // Clear any existing timeout
+                if (this.autoSaveTimeout) {
+                    clearTimeout(this.autoSaveTimeout);
+                }
+                
+                // Set a new timeout to save after 1 second of no typing
+                this.autoSaveTimeout = setTimeout(() => {
+                    this.saveNotes(false);
+                }, 1000);
+            }
+
+            saveNotes(showConfirmation = false) {
+                try {
+                    const data = {
+                        notes: this.notes,
+                        textArea: this.notesArea.value,
+                        lastSaved: new Date().toLocaleString()
+                    };
+                    localStorage.setItem('notesData', JSON.stringify(data));
+                    
+                    if (showConfirmation) {
+                        this.showSaveStatus('✓ Saved successfully!');
+                    }
+                } catch (error) {
+                    console.error('Error saving notes:', error);
+                    this.showSaveStatus('Error saving notes. Please try again.', true);
+                }
+            }
+
+            loadNotes() {
+                try {
+                    const savedData = localStorage.getItem('notesData');
+                    if (savedData) {
+                        const data = JSON.parse(savedData);
+                        this.notes = data.notes || [];
+                        this.notesArea.value = data.textArea || '';
+                        this.render();
+                        
+                        // Show last saved time if available
+                        if (data.lastSaved) {
+                            this.showSaveStatus(`Last saved: ${data.lastSaved}`);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading notes:', error);
+                    this.showSaveStatus('Error loading saved notes.', true);
+                }
             }
 
             createNoteElement(note, index) {
@@ -415,24 +476,6 @@
                     this.notesArea.value = '';
                     this.render();
                     this.saveNotes();
-                }
-            }
-
-            saveNotes() {
-                const data = {
-                    notes: this.notes,
-                    textArea: this.notesArea.value
-                };
-                localStorage.setItem('notesData', JSON.stringify(data));
-            }
-
-            loadNotes() {
-                const savedData = localStorage.getItem('notesData');
-                if (savedData) {
-                    const data = JSON.parse(savedData);
-                    this.notes = data.notes || [];
-                    this.notesArea.value = data.textArea || '';
-                    this.render();
                 }
             }
         }
