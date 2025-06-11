@@ -293,9 +293,17 @@
             <div class="paragraph-section">
                 <h3>About</h3>
                 <div id="paragraph-content" class="paragraph-content">
-                    <p>Welcome to your notes page! This is a simple and clean interface for managing your tasks and notes.</p>
-                    <p>Use the left section for longer notes and paragraphs, and the right section for quick tasks and to-dos.</p>
-                    <p>All your content is automatically saved locally in your browser.</p>
+                    <p>
+                        In modern electrical grids, Overcurrent and Earth Fault (OCEF) protection serves a dual role, forming a cornerstone of network reliability. For a typical utility, OCEF relays provide the main protection on 11kV distribution feeders, such as those rated for 400A and 800A. At the 132kV transmission level, they transition to a crucial backup role, supporting primary schemes like current differential and distance protection on feeders and transformers.
+
+                        Effective implementation hinges on precise grading to ensure selectivity—isolating only the faulted section. This is achieved by grading Overcurrent (OC) with OC relays and Earth Fault (EF) with EF relays. Critically, for single-phase-to-ground faults which are seen by both types of relays, OC and EF protection must be coordinated against each other to prevent a "race condition" where an upstream backup relay trips before a downstream primary one. The fundamental setting rule is to place the pickup current above the maximum load but below the minimum fault current.
+                        
+                        This grading is achieved using Inverse Definite Minimum Time (IDMT) curves, which trip faster for higher currents. The most common shapes are Normal Inverse (NI), a general-purpose curve; Very Inverse (VI), which is steeper and often used where fault current drops significantly along a feeder; and Extremely Inverse (EI), the steepest curve.
+                        
+                        A sophisticated coordination strategy often involves an upstream Earth Fault relay with an EI curve and a downstream Overcurrent relay with an NI curve. The downstream OC relay’s pickup must be set high to ignore normal load current, making it blind to low-level, high-impedance earth faults. The upstream EF relay, which only measures the fault current imbalance, can be set much more sensitively. By using a steep EI curve, the upstream EF relay is made deliberately faster for these specific low-current faults, acting as a specialized primary detector. For high-current faults, the downstream OC relay is faster, ensuring correct selectivity for major events.
+                    
+                    
+                    </p>
                 </div>
             </div>
             <textarea id="notes-area" class="notes-area" placeholder="Write your notes here..."></textarea>
