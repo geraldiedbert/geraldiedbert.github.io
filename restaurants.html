@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HK Island Restaurants</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #37352f;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 300px;
+            padding: 1rem;
+            background-color: #f7f6f3;
+            border-right: 1px solid #e9e8e4;
+            overflow-y: auto;
+        }
+
+        .map-container {
+            flex-grow: 1;
+            height: 100%;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .area-selector {
+            margin-bottom: 1.5rem;
+        }
+
+        .area-selector h2 {
+            margin: 0 0 1rem 0;
+            font-size: 1.2rem;
+            color: #37352f;
+        }
+
+        .area-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .area-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e9e8e4;
+            border-radius: 4px;
+            background-color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            color: #37352f;
+            transition: all 0.2s;
+        }
+
+        .area-button:hover {
+            background-color: #f7f6f3;
+            border-color: #d3d1cb;
+        }
+
+        .area-button.active {
+            background-color: #2eaadc;
+            color: white;
+            border-color: #2eaadc;
+        }
+
+        .restaurant-list {
+            margin-top: 1rem;
+        }
+
+        .restaurant-card {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #ffffff;
+            border: 1px solid #e9e8e4;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .restaurant-card:hover {
+            background-color: #f7f6f3;
+            border-color: #d3d1cb;
+        }
+
+        .restaurant-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .restaurant-rating {
+            color: #787774;
+            font-size: 14px;
+            margin-bottom: 0.5rem;
+        }
+
+        .restaurant-address {
+            color: #787774;
+            font-size: 14px;
+        }
+
+        .filter-options {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #ffffff;
+            border: 1px solid #e9e8e4;
+            border-radius: 8px;
+        }
+
+        .filter-options label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 14px;
+        }
+
+        .filter-options select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e9e8e4;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="area-selector">
+                <h2>Select Area</h2>
+                <div class="area-buttons">
+                    <button class="area-button active" data-area="central">Central</button>
+                    <button class="area-button" data-area="wanchai">Wan Chai</button>
+                    <button class="area-button" data-area="causewaybay">Causeway Bay</button>
+                    <button class="area-button" data-area="northpoint">North Point</button>
+                    <button class="area-button" data-area="quarrybay">Quarry Bay</button>
+                    <button class="area-button" data-area="chaiwan">Chai Wan</button>
+                </div>
+            </div>
+            <div class="filter-options">
+                <label for="sort-by">Sort by:</label>
+                <select id="sort-by">
+                    <option value="rating">Rating</option>
+                    <option value="reviews">Number of Reviews</option>
+                    <option value="distance">Distance</option>
+                </select>
+                <label for="min-rating">Minimum Rating:</label>
+                <select id="min-rating">
+                    <option value="0">Any Rating</option>
+                    <option value="3">3+ Stars</option>
+                    <option value="4">4+ Stars</option>
+                    <option value="4.5">4.5+ Stars</option>
+                </select>
+            </div>
+            <div class="restaurant-list" id="restaurant-list">
+                <!-- Restaurant cards will be added here -->
+            </div>
+        </div>
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script>
+        // Replace with your Google Maps API key
+        const API_KEY = 'YOUR_GOOGLE_MAPS_API_KEY';
+
+        // Hong Kong Island coordinates
+        const HK_ISLAND_BOUNDS = {
+            north: 22.2900,
+            south: 22.2500,
+            east: 114.2300,
+            west: 114.1000
+        };
+
+        // Area coordinates
+        const AREA_COORDINATES = {
+            central: { lat: 22.2819, lng: 114.1581 },
+            wanchai: { lat: 22.2783, lng: 114.1747 },
+            causewaybay: { lat: 22.2783, lng: 114.1847 },
+            northpoint: { lat: 22.2883, lng: 114.1947 },
+            quarrybay: { lat: 22.2833, lng: 114.2147 },
+            chaiwan: { lat: 22.2733, lng: 114.2347 }
+        };
+
+        let map;
+        let markers = [];
+        let currentArea = 'central';
+        let placesService;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: AREA_COORDINATES[currentArea],
+                zoom: 15,
+                restriction: {
+                    latLngBounds: HK_ISLAND_BOUNDS,
+                    strictBounds: true
+                }
+            });
+
+            placesService = new google.maps.places.PlacesService(map);
+
+            // Add click listeners to area buttons
+            document.querySelectorAll('.area-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.querySelector('.area-button.active').classList.remove('active');
+                    button.classList.add('active');
+                    currentArea = button.dataset.area;
+                    searchRestaurants();
+                });
+            });
+
+            // Add change listeners to filters
+            document.getElementById('sort-by').addEventListener('change', searchRestaurants);
+            document.getElementById('min-rating').addEventListener('change', searchRestaurants);
+
+            // Initial search
+            searchRestaurants();
+        }
+
+        function searchRestaurants() {
+            // Clear existing markers
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+
+            const request = {
+                location: AREA_COORDINATES[currentArea],
+                radius: '1000',
+                type: ['restaurant'],
+                rankBy: google.maps.places.RankBy.RATING
+            };
+
+            placesService.nearbySearch(request, (results, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    const minRating = parseFloat(document.getElementById('min-rating').value);
+                    const sortBy = document.getElementById('sort-by').value;
+
+                    // Filter and sort results
+                    results = results.filter(place => place.rating >= minRating);
+                    results.sort((a, b) => {
+                        switch (sortBy) {
+                            case 'rating':
+                                return b.rating - a.rating;
+                            case 'reviews':
+                                return (b.user_ratings_total || 0) - (a.user_ratings_total || 0);
+                            case 'distance':
+                                return 0; // Already sorted by distance by the API
+                        }
+                    });
+
+                    // Display results
+                    displayResults(results);
+                }
+            });
+        }
+
+        function displayResults(results) {
+            const restaurantList = document.getElementById('restaurant-list');
+            restaurantList.innerHTML = '';
+
+            results.forEach(place => {
+                // Create marker
+                const marker = new google.maps.Marker({
+                    position: place.geometry.location,
+                    map: map,
+                    title: place.name
+                });
+                markers.push(marker);
+
+                // Create restaurant card
+                const card = document.createElement('div');
+                card.className = 'restaurant-card';
+                card.innerHTML = `
+                    <div class="restaurant-name">${place.name}</div>
+                    <div class="restaurant-rating">
+                        Rating: ${place.rating} ⭐ (${place.user_ratings_total || 0} reviews)
+                    </div>
+                    <div class="restaurant-address">${place.vicinity}</div>
+                `;
+
+                // Add click listener to card
+                card.addEventListener('click', () => {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);
+                });
+
+                restaurantList.appendChild(card);
+            });
+        }
+    </script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initMap">
+    </script>
+</body>
+</html> 
